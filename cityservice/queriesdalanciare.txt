@@ -1,0 +1,133 @@
+create database cities;
+use cities;
+
+create table City
+(
+	id int primary key auto_increment,
+    name varchar(100),
+    picture varchar(255)
+);
+
+create table Building
+(
+	id int primary key auto_increment,
+	name varchar(100),
+    type varchar(100),
+	address varchar(100),
+    cityid int
+);
+
+create table Citizen
+(
+	id int primary key auto_increment,
+	name varchar(100),
+    surname varchar(100),
+	dob varchar(100),
+	job varchar(100),
+    buildingid int
+);
+
+insert into City 
+(name,picture)
+values
+(
+	'Milano',
+    'https://www.yesmilano.it/sites/default/files/styles/testata_full/public/2020-06/Panorama%20Milano%20Foto%20Getty%201280x560px.png?itok=0M48HWK_'
+);
+
+insert into City 
+(name,picture)
+values
+(
+	'Monza',
+    'https://www.regione.lombardia.it/wps/wcm/connect/50cb074d-127a-4f4d-8095-a7beb98b264c/1536x1024_villa-Reale-Monza02.jpg?MOD=AJPERES'
+);
+
+insert into building 
+(name,type,address,cityid)
+values
+(
+	'Parco di Monza',
+    'Park',
+    'Via Parco, 1',
+    2
+);
+
+insert into building 
+(name,type,address,cityid)
+values
+(
+	'Duomo di Milano',
+    'Other',
+    'Piazza Duomo, 1',
+    1
+);
+
+insert into building 
+(name,type,address,cityid)
+values
+(
+	'Palazzo dell\'Arengario',
+    'Other',
+    'Piazza Roma',
+    2
+);
+
+insert into Citizen 
+(name,surname,dob,job,buildingid)
+values
+(
+	'Ferdinando',
+    'Primerano',
+    '05/02/1980',
+    'Teacher',
+    1
+);
+
+insert into Citizen 
+(name,surname,dob,job,buildingid)
+values
+(
+	'Stefano',
+    'Rubinetti',
+    '27/08/1995',
+    'Teacher',
+    3
+);
+
+insert into Citizen 
+(name,surname,dob,job,buildingid)
+values
+(
+	'Gianni',
+    'Pinotto',
+    '21/04/1949',
+    'Comedians',
+    4
+);
+
+insert into Citizen 
+(name,surname,dob,job,buildingid)
+values
+(
+	'Torquato',
+    'Tasso',
+    '12/09/1999',
+    'Writer',
+    1
+);
+
+insert into Citizen 
+(name,surname,dob,job,buildingid)
+values
+(
+	'Dante',
+    'Alighieri',
+    '12/12/1965',
+    'Writer',
+    4
+);
+
+
+
+
