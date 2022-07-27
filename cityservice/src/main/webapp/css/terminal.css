@@ -1,0 +1,26 @@
+BODY
+{
+	background-color:black;
+	color:green;	
+	font-family:Tahoma;
+	font-size:40px;
+}
+
+#commandbar
+{
+	background-color:black;
+	border-left:0px;
+	border-right:0px;
+	border-top:0px;
+	border-bottom:6px dashed green;
+	width:100%;
+	font-size:40px;
+	color:green;
+}
+
+.menubutton
+{
+	font-size:20px;
+	color:black;
+	background-color:green;
+}

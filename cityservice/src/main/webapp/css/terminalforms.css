@@ -1,0 +1,25 @@
+.formdiv
+{
+	width:30%;
+	font-size:20px;
+}
+
+.formdiv INPUT[type=button]
+{
+	border:3px green solid !important;
+}
+
+.formdiv INPUT
+{
+	font-size:20px;
+	background-color:black;
+	color:green;
+	border-left:0px;
+	border-right:0px;
+	border-top:0px;
+	border-bottom:3px dashed green;
+	display:block;
+	width:90%;
+	margin:2%;
+
+}
