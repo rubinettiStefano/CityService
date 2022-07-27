@@ -5,9 +5,6 @@
 	<head>
 		<meta charset="ISO-8859-1">
 		<title>City Manager</title>
-		<script src="/js/model/entities/City.js" ></script>
-		<script src="/js/model/entities/Building.js" ></script>
-		<script src="/js/model/entities/Citizen.js"></script>
 		<script src="/js/model/database/CityDatabase.js"> </script>
 		<script src="/js/view/CityView.js"> </script>
 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">

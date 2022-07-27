@@ -25,6 +25,7 @@ let controller =
 		try
 		{
 			controller.cityDatabase.insertCity(name,picture);
+			
 			controller.fill('insertcityresult', "<b style='color:green'>SAVED</b>");
 			controller.refreshCitiesList();
 		}

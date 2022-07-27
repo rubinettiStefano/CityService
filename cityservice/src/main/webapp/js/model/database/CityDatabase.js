@@ -22,13 +22,7 @@ class CityDatabase
 										// quale oggetto? cityDatabase
 		);
 	}
-	
-	refreshDB()
-	{
-		let json = JSON.stringify(this.cities);
-		localStorage.setItem("javacities", json);
-	}
-	
+		
 	getCityByName(name)
 	{
 		name = name.toLowerCase().trim();
@@ -51,23 +45,7 @@ class CityDatabase
 
 	removeCitizen(citizenid)
 	{
-		let citypos = null;
-		let buildingpos = null;
-		let citizenpos = null;
-		for(let i=0;i<this.cities.length;i++)
-			for(let k=0;k<this.cities[i].buildings.length;k++)
-				for(let j=0;j<this.cities[i].buildings[k].citizens.length;j++)
-					if(this.cities[i].buildings[k].citizens[j].id==citizenid)
-					{
-						citypos 		= i;	
-						buildingpos 	= k;
-						citizenpos 		= j;
-						break;
-					}
-		if(citypos==null)
-			throw "Citizen not found";
-		else
-			this.cities[citypos].buildings[buildingpos].citizens.splice(citizenpos, 1);
+		alert("TODO");
 	}
 	
 	
@@ -84,20 +62,31 @@ class CityDatabase
 		if(name=="" || picture=="")
 			throw "Name and picture required";
 			
-		if(this.getCityByName(name))
-			throw "City already present";
+		let city = {"name":name, "picture":picture};
 		
-		let res = 1;
-		for(let i=0;i<this.cities.length;i++)
-			if(this.cities[i].id>=res)
-				res=this.cities[i].id+1;
-				
-		let newCity = new City(res,name,picture,[]);
-		this.cities.push(newCity);
-		
-		this.refreshDB();
-		
-		return true;
+		$.ajax
+		(
+			{
+				type:"POST",			
+				url:"../cities",
+				contentType:'application/json',
+				data: JSON.stringify(city),  	// Una specie di toString in JSON di city
+				async: false,					// scelta comoda ma poco efficiente... aspetto che il service mi risponda
+				success:(function(data)
+				{
+					// mi hai inserito la città? Me la hai rimandata con l'id? AGGIORNO LA MIA LISTA
+					// mi aspetto che il servizio mi mandi la nuova città, con tanto di id. La aggiungo alla mia lista
+					console.log(data);
+					this.cities.push(eval(data));
+				}).bind(this)
+				,
+				statusCode:
+				{
+					"400": function(){console.log("Bad request")},	
+					"403": function(){console.log("Forbidden")}
+				}
+			}
+		);
 	}
 	
 	
@@ -106,124 +95,65 @@ class CityDatabase
 		if(name==''||type==''||address=='')
 			throw "Invalid data, cannot save";
 		
+		let building = {"name":name, "type":type, "address":address};
 		
-		let newid = -1;
-		for(let i=0;i<this.cities.length;i++)
-			for(let k=0;k<this.cities[i].buildings.length;k++)
-				if(this.cities[i].buildings[k].id>=newid)
-					newid = this.cities[i].buildings[k].id+1;
-				
-		let b = new Building(newid, name, type, address, []);		
-				
-		let city = this.getCity(cityid);
-		if(!city)
-			throw "Cannot find city with id: "+cityid;
-		city.buildings.push(b);
-		this.refreshDB();
+		$.ajax
+		(
+			{
+				type:"POST",			
+				url:"../cities/"+cityid+"/buildings",
+				contentType:'application/json',
+				data: JSON.stringify(building),  	// Una specie di toString in JSON di city
+				async: false,					// scelta comoda ma poco efficiente... aspetto che il service mi risponda
+				success:(function(data)
+				{
+					// mi hai inserito la città? Me la hai rimandata con l'id? AGGIORNO LA MIA LISTA
+					// mi aspetto che il servizio mi mandi la nuova città, con tanto di id. La aggiungo alla mia lista
+					this.getCity(cityid).buildings.push(eval(data));
+					// eval = trasforma la response in JSON
+					// alternativa a JSON.parse
+				}).bind(this)
+				,
+				statusCode:
+				{
+					"400": function(){console.log("Bad request")},	
+					"403": function(){console.log("Forbidden")}
+				}
+			}
+		);
+		
 	}
 	
 	deleteCity(id)
 	{
-		let pos = -1;
-		for(let i=0;i<this.cities.length;i++)
-			if(this.cities[i].id==id)
+		$.ajax
+		(
 			{
-				pos = i;
-				break;
+				type:"DELETE",			
+				url:"../cities/"+id,
+				contentType:'application/json',
+				async:false,
+				success:(function(data)
+				{
+					let pos = -1;
+					for(let i=0;i<this.cities.length;i++)
+						if(this.cities[i].id==id)
+						{
+							pos = i;
+							break;
+						}
+						
+					this.cities.splice(pos,1);	
+				}).bind(this)
+				,
+				statusCode:
+				{
+					"400": function(){alert("Bad request")},	
+					"403": function(){alert("Forbidden")},
+					"404":function(){alert("Not found")}
+				}
 			}
-			
-		if(pos>-1)
-		{
-			this.cities.splice(pos,1);
-			this.refreshDB();
-			return true;
-		}
-		else
-			return false;
-		
-	}
-	
-	makeFakeData()
-	{
-		
-		let b1 = new Building
-		(
-			1,
-			"Java Academy",
-			"Office",
-			"Via Lecco, 20",
-			this.getRandomCitizens(1,10)
 		);
-		
-		let b2 = new Building
-		(
-			2,
-			"Salsa Academy",
-			"Office",
-			"Via Bergamo, 20",
-			this.getRandomCitizens(11,20)
-		);
-		
-		let b3 = new Building
-		(
-			3,
-			"Casterly Rock",
-			"Fortification",
-			"Via dell'oro, 10",
-			this.getRandomCitizens(21,30)
-		);
-		
-		let monza = new City
-		(
-			1,
-			"Monza",
-			"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx3j29k0O2xtb-IBeyy1uTCnreCDrdz8hwnw&usqp=CAU",
-			[b1,b2]
-		);
-		
-		let milano = new City
-		(
-			2,
-			"Milano",
-			"https://static.wikia.nocookie.net/lotr/images/b/b0/Fotr6.jpg/revision/latest?cb=20130419144638",
-			[b3]
-		);
-		
-		this.cities = [monza,milano];
-	}
-	
-	
-	getRandomCitizen(id)
-	{
-		let names = ["Lorenzo","Ferdinando","Giuseppe","Nicolò","Eleonora","Cosimo","Diego","Simone","Stefano"];
-		let surnames = ["Rossi","Bianchi","Verdi","Gialli","Fumagalli","Brambilla","Piddu","Primerano","Rubinetti","Ienco","Arostoi"];
-		let jobs = ["Teacher","Programmer","Student","Traveler","Blogger","Influencer","Artist","Fighter"];
-
-		return new Citizen(id, this.random(names),this.random(surnames), this.randomDob(), this.random(jobs))
-	}
-	
-	getRandomCitizens(minID,maxID)
-	{
-		let citizens = [];
-		for(let i=minID;i<=maxID;i++)
-			citizens.push(this.getRandomCitizen(i));
-		return citizens;
-	}
-	
-	random(v)
-	{
-		return v[parseInt(v.length * Math.random())];
-	}
-	
-	randomDob()
-	{
-		let day = parseInt(Math.random() * 28)+1;
-		let month = parseInt(Math.random() * 12)+1;
-		let year = 1970 + parseInt(Math.random() * 30);
-		
-		if(day<10) 		day="0"+day;
-		if(month<10) 	month="0"+month;
-		return day+"/"+month+"/"+year;
 	}
 	
 }
